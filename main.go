@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/joho/godotenv"
 	"log"
+	"naratmalsami-survey-server/db"
+	"naratmalsami-survey-server/routes"
 	"net/http"
 	"os"
-
-	"github.com/joho/godotenv"
+	"time"
 )
 
 func loadEnv() error {
@@ -16,12 +18,16 @@ func loadEnv() error {
 	return nil
 }
 
-func startServer(serverURL string) error {
-	fmt.Printf("서버가 https://%s에서 실행중입니다.\n", serverURL)
-	if err := http.ListenAndServe(serverURL, nil); err != nil {
-		return fmt.Errorf("서버 실행 중 오류: %w", err)
+func startServer(serverURL string, r http.Handler) error {
+	srv := &http.Server{
+		Handler:      r,
+		Addr:         serverURL,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
 	}
-	return nil
+
+	log.Printf("서버가 http://%s에서 실행 중입니다.\n", serverURL)
+	return srv.ListenAndServe()
 }
 
 func main() {
@@ -29,12 +35,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	serverURL := os.Getenv("SERVER_URL")
-	if serverURL == "" {
-		log.Fatal("SERVER_URL 환경 변수가 설정되지 않았습니다.")
+	wordDB, err := db.Connect_DB()
+	if err != nil {
+		log.Fatal("데이터베이스 초기화 실패:", err)
 	}
 
-	if err := startServer(serverURL); err != nil {
+	serverURL := os.Getenv("SERVER_URL")
+
+	r := routes.SetupRouter(wordDB)
+
+	if err := startServer(serverURL, r); err != nil {
 		log.Fatal(err)
 	}
 }
