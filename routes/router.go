@@ -8,6 +8,10 @@ import (
 
 func SetupRouter(wordDB *db.WordDB) *mux.Router {
 	r := mux.NewRouter()
+
 	r.HandleFunc("/sheet", service.GetSheetService(wordDB)).Methods("GET")
+
+	r.HandleFunc("/", service.GetHelloWorld).Methods("GET")
+
 	return r
 }
