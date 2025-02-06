@@ -7,4 +7,5 @@ type WordOfRating struct {
 	RefinedWord  string `gorm:"type:varchar(30);not null"`
 	Meaning      string `gorm:"type:text"`
 	WholeRating  int    `gorm:"default:0"`
+	Member       int    `gorm:"default:0"`
 }
