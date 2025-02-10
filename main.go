@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gorilla/handlers"
 	"github.com/joho/godotenv"
 	"log"
 	"naratmalsami-survey-server/db"
@@ -19,6 +20,17 @@ func loadEnv() error {
 }
 
 func startServer(serverURL string, r http.Handler) error {
+	// CORS 처리
+	corsHandler := handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}),                             // 모든 출처 허용
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}),  // 허용할 HTTP 메소드
+		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}), // 허용할 헤더
+	)
+
+	// CORS 미들웨어를 라우터에 적용
+	r = corsHandler(r)
+
+	// 서버 설정
 	srv := &http.Server{
 		Handler:      r,
 		Addr:         serverURL,
