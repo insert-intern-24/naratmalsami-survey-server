@@ -20,3 +20,8 @@ type Voted struct {
 	Rating    int    `gorm:"column:rating;not null" json:"rating"`
 	AtCreated string `gorm:"column:at_created;type:timestamp;not null" json:"at_created"`
 }
+
+// [POST] /sheet request body
+type SheetRequestBody struct {
+	Who *string `json:"who"`
+}

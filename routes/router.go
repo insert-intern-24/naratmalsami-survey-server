@@ -6,7 +6,7 @@ import (
 	"naratmalsami-survey-server/service"
 )
 
-func SetupRouter(wordDB *db.WordDB) *mux.Router {
+func SetupRouter(wordDB *db.DataDB) *mux.Router {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/sheet", service.GetSheetService(wordDB)).Methods("GET")
