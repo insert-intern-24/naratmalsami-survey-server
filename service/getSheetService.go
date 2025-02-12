@@ -29,7 +29,7 @@ func GetSheetService(db *db.DataDB) http.HandlerFunc {
 		}
 
 		// sheet 데이터 조회
-		words, err := db.GetWordsInRange(1, 10)
+		words, err := db.GetLeastVotedWords(5)
 		if err != nil {
 			http.Error(w, "데이터베이스 조회 실패", http.StatusInternalServerError)
 			return
