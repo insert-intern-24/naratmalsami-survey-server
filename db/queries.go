@@ -4,6 +4,12 @@ import (
 	"naratmalsami-survey-server/db/model"
 )
 
+func (db *DataDB) SearchUser(userId string) (isValidUser bool) {
+	var count int64
+	err := db.Model(&model.Users{}).Where("user_id = ?", userId).Count(&count).Error
+	return err == nil && count > 0
+}
+
 func (db *DataDB) InsertRating(body model.VotedRequestBody) {
 	for _, word := range body.Words {
 		db.Create(&model.Voted{

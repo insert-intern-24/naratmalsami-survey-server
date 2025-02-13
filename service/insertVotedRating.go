@@ -15,6 +15,18 @@ func InsertVotedRating(db *db.DataDB) http.HandlerFunc {
 			http.Error(w, "잘못된 요청 데이터", http.StatusBadRequest)
 			return
 		}
+
+		// 사용자 유효성 검사
+		if req.Who == nil {
+			http.Error(w, "사용자 정보가 없습니다", http.StatusBadRequest)
+			return
+		}
+
+		if isValidUser := db.SearchUser(*req.Who); !isValidUser {
+			http.Error(w, "비정상적인 사용자 접근", http.StatusBadRequest)
+			return
+		}
+
 		// 비지니스 로직 요청
 		db.InsertRating(req)
 
