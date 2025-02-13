@@ -28,7 +28,10 @@ func InsertVotedRating(db *db.DataDB) http.HandlerFunc {
 		}
 
 		// 비지니스 로직 요청
-		db.InsertRating(req)
+		if err := db.InsertRating(req); err != nil {
+			http.Error(w, "투표 데이터 입력 실패", http.StatusInternalServerError)
+			return
+		}
 
 		// 응답 데이터 센터
 		response := map[string]string{

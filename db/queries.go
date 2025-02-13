@@ -3,22 +3,27 @@ package db
 import (
 	"fmt"
 	"naratmalsami-survey-server/db/model"
+	"time"
 )
 
 func (db *DataDB) SearchUser(userId string) (isValidUser bool) {
 	var count int64
-	err := db.Model(&model.Users{}).Where("user_id = ?", userId).Count(&count).Error
+	err := db.Model(&model.Users{}).Where("who = ?", userId).Count(&count).Error
 	return err == nil && count > 0
 }
 
-func (db *DataDB) InsertRating(body model.VotedRequestBody) {
+func (db *DataDB) InsertRating(body model.VotedRequestBody) error {
 	for _, word := range body.Words {
-		db.Create(&model.Voted{
-			WordId: uint(word.WordId),
-			Who:    *body.Who,
-			Rating: word.Rating,
-		})
+		if err := db.Create(&model.Voted{
+			WordId:    uint(word.WordId),
+			Who:       *body.Who,
+			Rating:    word.Rating,
+			AtCreated: time.Now(),
+		}).Error; err != nil {
+			return fmt.Errorf("failed to insert rating for word ID %d: %w", word.WordId, err)
+		}
 	}
+	return nil
 }
 
 func (db *DataDB) CreateUser() (string, error) {

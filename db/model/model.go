@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 // Words 단어 테이블
 type Words struct {
 	WordId       uint   `gorm:"primaryKey" json:"word_id"`
@@ -16,10 +18,10 @@ type Users struct {
 
 // Voted 단어 평가 테이블
 type Voted struct {
-	WordId    uint   `gorm:"primaryKey" json:"word_id"`
-	Who       string `gorm:"type:char(36);not null" json:"who"`
-	Rating    int    `gorm:"column:rating;not null" json:"rating"`
-	AtCreated string `gorm:"column:at_created;type:timestamp;not null" json:"at_created"`
+	WordId    uint      `gorm:"primaryKey" json:"word_id"`
+	Who       string    `gorm:"type:char(36);not null" json:"who"`
+	Rating    int       `gorm:"column:rating;not null" json:"rating"`
+	AtCreated time.Time `gorm:"column:at_created;type:timestamp;not null" json:"at_created"`
 }
 
 // [POST] /sheet request body
