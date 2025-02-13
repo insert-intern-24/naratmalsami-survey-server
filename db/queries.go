@@ -1,21 +1,17 @@
 package db
 
 import (
-	"gorm.io/gorm"
 	"naratmalsami-survey-server/db/model"
 )
 
-func (db *DataDB) UpdateRating(ids []uint, ratings []int) error {
-	for i := 0; i < len(ids); i++ {
-		if err := db.Model(&model.Words{}).Where("word_id = ?", ids[i]).
-				Updates(map[string]interface{}{
-					"whole_rating": gorm.Expr("whole_rating + ?", ratings[i]),
-					"member":       gorm.Expr("member + 1"),
-				}).Error; err != nil {
-			return err
-		}
+func (db *DataDB) InsertRating(body model.VotedRequestBody) {
+	for _, word := range body.Words {
+		db.Create(&model.Voted{
+			WordId: uint(word.WordId),
+			UserId: *body.Who,
+			Rating: word.Rating,
+		})
 	}
-	return nil
 }
 
 func (db *DataDB) CreateUser() (string, error) {

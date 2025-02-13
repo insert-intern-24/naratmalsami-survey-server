@@ -25,3 +25,14 @@ type Voted struct {
 type SheetRequestBody struct {
 	Who *string `json:"who"`
 }
+
+// [POST] /voted request body
+type VotedRequestBody struct {
+	Who   *string      `json:"who"`
+	Words []WordRating `json:"words"`
+}
+
+type WordRating struct {
+	WordId uint `json:"word_id"`
+	Rating int  `json:"rating"`
+}

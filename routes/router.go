@@ -9,7 +9,9 @@ import (
 func SetupRouter(wordDB *db.DataDB) *mux.Router {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/sheet", service.GetSheetService(wordDB)).Methods("GET")
+	r.HandleFunc("/voted", service.InsertVotedRating(wordDB)).Methods("POST")
+
+	r.HandleFunc("/sheet", service.GetSheetService(wordDB)).Methods("POST")
 
 	r.HandleFunc("/", service.GetHelloWorld).Methods("GET")
 
