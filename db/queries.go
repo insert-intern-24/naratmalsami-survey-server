@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"naratmalsami-survey-server/db/model"
 )
 
@@ -14,7 +15,7 @@ func (db *DataDB) InsertRating(body model.VotedRequestBody) {
 	for _, word := range body.Words {
 		db.Create(&model.Voted{
 			WordId: uint(word.WordId),
-			UserId: *body.Who,
+			Who:    *body.Who,
 			Rating: word.Rating,
 		})
 	}
@@ -24,16 +25,22 @@ func (db *DataDB) CreateUser() (string, error) {
 	user := model.Users{}
 	result := db.DB.Create(&user)
 	if result.Error != nil {
-		return "", result.Error
+		return "", fmt.Errorf("failed to create user: %w", result.Error)
 	}
-	return user.UserId, nil
+
+	var createdUser model.Users
+	if err := db.DB.First(&createdUser, user.UsersId).Error; err != nil {
+		return "", fmt.Errorf("failed to retrieve created user: %w", err)
+	}
+
+	return createdUser.Who, nil
 }
 
 func (db *DataDB) GetLeastVotedWords(limit int) ([]model.Words, error) {
 	var words []model.Words
 
 	// 투표 수 집계 서브쿼리
-	voteCountSubQuery := db.Table("voted").
+	voteCountSubQuery := db.Table("voteds").
 		Select("word_id, COUNT(rating) AS vote_count").
 		Group("word_id")
 

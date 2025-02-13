@@ -19,8 +19,9 @@ func GetSheetService(db *db.DataDB) http.HandlerFunc {
 
 		// request body, who 필드 체크
 		var who *string = req.Who
-		if who != nil {
+		if who == nil {
 			user, err := db.CreateUser()
+			log.Println(user)
 			if err != nil {
 				http.Error(w, "사용자 생성 실패", http.StatusInternalServerError)
 				return
