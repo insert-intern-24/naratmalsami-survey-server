@@ -19,7 +19,7 @@ type Users struct {
 // Voted 단어 평가 테이블
 type Voted struct {
 	WordId    uint      `gorm:"primaryKey" json:"word_id"`
-	Who       string    `gorm:"type:char(36);not null" json:"who"`
+	UserId    uint      `gorm:"not null" json:"user_id"`
 	Rating    int       `gorm:"column:rating;not null" json:"rating"`
 	AtCreated time.Time `gorm:"column:at_created;type:timestamp;not null" json:"at_created"`
 }

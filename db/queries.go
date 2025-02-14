@@ -6,17 +6,16 @@ import (
 	"time"
 )
 
-func (db *DataDB) SearchUser(userId string) (isValidUser bool) {
-	var count int64
-	err := db.Model(&model.Users{}).Where("who = ?", userId).Count(&count).Error
-	return err == nil && count > 0
+func (db *DataDB) SearchUser(who string) (isValidUser bool, userId uint) {
+	err := db.Model(&model.Users{}).Select("users_id").Where("who = ?", who).Scan(&userId).Error
+	return err == nil, userId
 }
 
-func (db *DataDB) InsertRating(body model.VotedRequestBody) error {
+func (db *DataDB) InsertRating(body model.VotedRequestBody, userId uint) error {
 	for _, word := range body.Words {
 		if err := db.Create(&model.Voted{
 			WordId:    uint(word.WordId),
-			Who:       *body.Who,
+			UserId:    userId,
 			Rating:    word.Rating,
 			AtCreated: time.Now(),
 		}).Error; err != nil {

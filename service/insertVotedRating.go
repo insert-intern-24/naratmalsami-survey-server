@@ -22,13 +22,16 @@ func InsertVotedRating(db *db.DataDB) http.HandlerFunc {
 			return
 		}
 
-		if isValidUser := db.SearchUser(*req.Who); !isValidUser {
+		var userId uint
+		if isValidUser, id := db.SearchUser(*req.Who); !isValidUser {
 			http.Error(w, "비정상적인 사용자 접근", http.StatusBadRequest)
 			return
+		} else {
+			userId = id
 		}
 
 		// 비지니스 로직 요청
-		if err := db.InsertRating(req); err != nil {
+		if err := db.InsertRating(req, userId); err != nil {
 			http.Error(w, "투표 데이터 입력 실패", http.StatusInternalServerError)
 			return
 		}
