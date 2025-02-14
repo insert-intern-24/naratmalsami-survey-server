@@ -26,12 +26,12 @@ func GetSheetService(db *db.DataDB) http.HandlerFunc {
 				return
 			}
 			who = &user
-		}
-
-		// 사용자 유효성 검사
-		if isValidUser, _ := db.SearchUser(*req.Who); !isValidUser {
-			http.Error(w, "비정상적인 사용자 접근", http.StatusBadRequest)
-			return
+		} else {
+			// 사용자 유효성 검사
+			if isValidUser, _ := db.SearchUser(*req.Who); !isValidUser {
+				http.Error(w, "비정상적인 사용자 접근", http.StatusBadRequest)
+				return
+			}
 		}
 
 		// sheet 데이터 조회
