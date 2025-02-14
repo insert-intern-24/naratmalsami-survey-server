@@ -8,9 +8,18 @@ import (
 
 func (db *DataDB) SearchUser(who string) (isValidUser bool, userId uint) {
 	err := db.Model(&model.Users{}).Select("users_id").Where("who = ?", who).Scan(&userId).Error
-	return err != nil, userId
-}
+	if err != nil {
+		// 에러가 발생한 경우
+		return false, 0
+	}
 
+	// 사용자 ID가 0인 경우 유효하지 않은 사용자로 판단
+	if userId == 0 {
+		return false, 0
+	}
+
+	return true, userId
+}
 func (db *DataDB) InsertRating(body model.VotedRequestBody, userId uint) error {
 	for _, word := range body.Words {
 		if err := db.Create(&model.Voted{
