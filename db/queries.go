@@ -8,7 +8,7 @@ import (
 
 func (db *DataDB) SearchUser(who string) (isValidUser bool, userId uint) {
 	err := db.Model(&model.Users{}).Select("users_id").Where("who = ?", who).Scan(&userId).Error
-	return err == nil, userId
+	return err != nil, userId
 }
 
 func (db *DataDB) InsertRating(body model.VotedRequestBody, userId uint) error {
