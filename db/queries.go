@@ -57,17 +57,11 @@ func (db *DataDB) GetLeastVotedWords(limit int) ([]model.Words, error) {
 		Select("word_id, COUNT(rating) AS vote_count").
 		Group("word_id")
 
-	// 최소 의미 길이 서브쿼리
-	minMeaningLengthSubQuery := db.Table("words as w2").
-		Select("MIN(LENGTH(w2.meaning))").
-		Where("w2.word_id = words.word_id")
-
-	// 메인 쿼리 실행 (vote_count는 출력 제외)
+	// 메인 쿼리 실행
 	err := db.Table("words").
-		Select("words.word_id, words.original_word, words.refined_word, words.meaning").
+		Select("words.word_id, words.original_word, words.refined_word, words.meaning, words.point").
 		Joins("LEFT JOIN (?) AS vote_counts ON words.word_id = vote_counts.word_id", voteCountSubQuery).
-		Where("LENGTH(words.meaning) = (?)", minMeaningLengthSubQuery).
-		Order("COALESCE(vote_counts.vote_count, 0) ASC, words.weight DESC, LENGTH(words.meaning) ASC").
+		Order("COALESCE(vote_counts.vote_count, 0) ASC, words.point DESC").
 		Limit(limit).
 		Find(&words).Error
 
