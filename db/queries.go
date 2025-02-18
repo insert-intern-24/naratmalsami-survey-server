@@ -67,7 +67,7 @@ func (db *DataDB) GetLeastVotedWords(limit int) ([]model.Words, error) {
 		Select("words.word_id, words.original_word, words.refined_word, words.meaning").
 		Joins("LEFT JOIN (?) AS vote_counts ON words.word_id = vote_counts.word_id", voteCountSubQuery).
 		Where("LENGTH(words.meaning) = (?)", minMeaningLengthSubQuery).
-		Order("COALESCE(vote_counts.vote_count, 0) ASC, LENGTH(words.meaning) ASC").
+		Order("COALESCE(vote_counts.vote_count, 0) ASC, words.weight DESC, LENGTH(words.meaning) ASC").
 		Limit(limit).
 		Find(&words).Error
 

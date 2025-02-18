@@ -8,6 +8,7 @@ type Words struct {
 	OriginalWord string `gorm:"column:original_word;type:varchar(30);uniqueIndex;not null" json:"original_word"`
 	RefinedWord  string `gorm:"column:refined_word;type:varchar(30);not null" json:"refined_word"`
 	Meaning      string `gorm:"column:meaning;type:text" json:"meaning"`
+	Weight       int    `gorm:"column:weight;type:int" json:"weight"`
 }
 
 // Users 유저 테이블
