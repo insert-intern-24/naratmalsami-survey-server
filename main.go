@@ -13,7 +13,7 @@ import (
 )
 
 func loadEnv() error {
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load("/app/.env"); err != nil {
 		return fmt.Errorf("환경 파일 로드 실패: %w", err)
 	}
 	return nil

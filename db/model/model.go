@@ -13,14 +13,14 @@ type Words struct {
 
 // Users 유저 테이블
 type Users struct {
-	UsersId uint   `gorm:"primaryKey;autoIncrement" json:"users_id"`
-	Who     string `gorm:"type:char(36);default:(UUID())" json:"who"`
+	UserId uint   `gorm:"primaryKey;autoIncrement" json:"user_id"`
+	Who    string `gorm:"type:char(36);default:(UUID())" json:"who"`
 }
 
 // Voted 단어 평가 테이블
 type Voted struct {
 	WordId    uint      `gorm:"primaryKey" json:"word_id"`
-	UserId    uint      `gorm:"not null" json:"user_id"`
+	UserId    uint      `gorm:"primaryKey" json:"user_id"`
 	Rating    int       `gorm:"column:rating;not null" json:"rating"`
 	AtCreated time.Time `gorm:"column:at_created;type:timestamp;not null" json:"at_created"`
 }

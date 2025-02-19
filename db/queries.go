@@ -7,7 +7,7 @@ import (
 )
 
 func (db *DataDB) SearchUser(who string) (isValidUser bool, userId uint) {
-	err := db.Model(&model.Users{}).Select("users_id").Where("who = ?", who).Scan(&userId).Error
+	err := db.Model(&model.Users{}).Select("user_id").Where("who = ?", who).Scan(&userId).Error
 	if err != nil {
 		// 에러가 발생한 경우
 		return false, 0
@@ -42,7 +42,7 @@ func (db *DataDB) CreateUser() (string, error) {
 	}
 
 	var createdUser model.Users
-	if err := db.DB.First(&createdUser, user.UsersId).Error; err != nil {
+	if err := db.DB.First(&createdUser, user.UserId).Error; err != nil {
 		return "", fmt.Errorf("failed to retrieve created user: %w", err)
 	}
 
@@ -59,9 +59,9 @@ func (db *DataDB) GetLeastVotedWords(limit int) ([]model.Words, error) {
 
 	// 메인 쿼리 실행
 	err := db.Table("words").
-		Select("words.word_id, words.original_word, words.refined_word, words.meaning, words.point").
+		Select("words.word_id, words.original_word, words.refined_word, words.meaning, words.weigh").
 		Joins("LEFT JOIN (?) AS vote_counts ON words.word_id = vote_counts.word_id", voteCountSubQuery).
-		Order("COALESCE(vote_counts.vote_count, 0) ASC, words.point DESC").
+		Order("COALESCE(vote_counts.vote_count, 0) ASC, words.weigh DESC").
 		Limit(limit).
 		Find(&words).Error
 
