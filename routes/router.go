@@ -15,5 +15,7 @@ func SetupRouter(wordDB *db.DataDB) *mux.Router {
 
 	r.HandleFunc("/", service.GetHelloWorld).Methods("GET")
 
+	r.HandleFunc("/ranking/{who}", service.GetRankingOfWhoService(wordDB)).Methods("GET")
+
 	return r
 }
