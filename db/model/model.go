@@ -25,6 +25,11 @@ type Voted struct {
 	AtCreated time.Time `gorm:"column:at_created;type:timestamp;not null" json:"at_created"`
 }
 
+type Ranking struct {
+	Who     string `gorm:"type:char(36);default:(UUID())" json:"who"`
+	Ranking int    `gorm:"column:ranking;not null" json:"ranking"`
+}
+
 // [POST] /sheet request body
 type SheetRequestBody struct {
 	Who *string `json:"who"`
