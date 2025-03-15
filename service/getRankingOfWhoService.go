@@ -27,7 +27,7 @@ func GetRankingOfWhoService(db *db.DataDB) http.HandlerFunc {
 		}
 
 		// ranking 등수 조회
-		ranking, err := db.GetRankingOfWho(who)
+		result, err := db.GetRankingOfWho(who)
 		if err != nil {
 			log.Printf("/ranking Database query failed: %v", err)
 			http.Error(w, "데이터베이스 조회 실패", http.StatusInternalServerError)
@@ -36,8 +36,10 @@ func GetRankingOfWhoService(db *db.DataDB) http.HandlerFunc {
 
 		// 응답 데이터 생성
 		data := map[string]interface{}{
-			"ranking": ranking,	
+			"ranking": result.ranking,	
+			"code" : result.code,
 		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		log.Println("/ranking success")

@@ -45,3 +45,8 @@ type WordRating struct {
 	WordId uint `json:"word_id"`
 	Rating int  `json:"rating"`
 }
+
+type RankingResponseBody struct {
+	Ranking int `json:"ranking"`
+	Code  	int `json:"code"`
+}
