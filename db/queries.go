@@ -72,10 +72,19 @@ func (db *DataDB) GetLeastVotedWords(limit int) ([]model.Words, error) {
 }
 
 func (db *DataDB) GetRankingOfWho(who string) (model.RankingResponseBody, error) {
-	var result int
-	err := db.Model(&model.Ranking{}).Select("ranking, code").Where("who = ?", who).Scan(&result).Error
+	var count int64
+	if err := db.Table("Rankings").Where("who = ?", who).Count(&count).Error; err != nil {
+		return model.RankingResponseBody{Ranking: -1, Code: -1}, err
+	}
+
+	if count == 0 {
+		return model.RankingResponseBody{Ranking: -1, Code: -1}, nil
+	}
+
+	var result model.RankingResponseBody
+	err := db.Table("Rankings").Select("ranking, code").Where("who = ?", who).Scan(&result).Error
 	if err != nil {
-		return 0, err
+		return model.RankingResponseBody{Ranking: -1, Code: -1}, err
 	}
 	return result, nil
 }

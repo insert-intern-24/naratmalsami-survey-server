@@ -5,7 +5,6 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"naratmalsami-survey-server/db"
-	"naratmalsami-survey-server/db/model"
 	"net/http"
 )
 
@@ -14,7 +13,7 @@ func GetRankingOfWhoService(db *db.DataDB) http.HandlerFunc {
 		// 요청 데이터 파싱
 		vars := mux.Vars(r)
 		who := vars["who"]
-		if who == nil {
+		if who == "" {
 			http.Error(w, "잘못된 요청 데이터", http.StatusBadRequest)
 			log.Printf("/ranking doesn't find who")
 		}
@@ -36,8 +35,8 @@ func GetRankingOfWhoService(db *db.DataDB) http.HandlerFunc {
 
 		// 응답 데이터 생성
 		data := map[string]interface{}{
-			"ranking": result.ranking,	
-			"code" : result.code,
+			"ranking": result.Ranking,	
+			"code" : result.Code,
 		}
 
 		w.Header().Set("Content-Type", "application/json")
