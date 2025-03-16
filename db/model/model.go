@@ -28,6 +28,7 @@ type Voted struct {
 type Ranking struct {
 	Who     string `gorm:"type:char(36);default:(UUID())" json:"who"`
 	Ranking int    `gorm:"column:ranking;not null" json:"ranking"`
+	Code  	int    `gorm:"column:code;not null" json:"code"`
 }
 
 // [POST] /sheet request body
